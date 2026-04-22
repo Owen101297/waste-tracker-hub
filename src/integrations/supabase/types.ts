@@ -14,16 +14,155 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      institutions: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          phone: string | null
+          responsible_person: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          phone?: string | null
+          responsible_person?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          phone?: string | null
+          responsible_person?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      waste_records: {
+        Row: {
+          anatomopatologicos: number | null
+          aprovechables: number | null
+          aprovechables_organicos: number | null
+          biosanitarios: number | null
+          cortopunzantes: number | null
+          created_at: string
+          day: number
+          de_animales: number | null
+          farmacos: number | null
+          id: string
+          institution_id: string
+          month: number
+          no_aprovechables: number | null
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          anatomopatologicos?: number | null
+          aprovechables?: number | null
+          aprovechables_organicos?: number | null
+          biosanitarios?: number | null
+          cortopunzantes?: number | null
+          created_at?: string
+          day: number
+          de_animales?: number | null
+          farmacos?: number | null
+          id?: string
+          institution_id: string
+          month: number
+          no_aprovechables?: number | null
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          anatomopatologicos?: number | null
+          aprovechables?: number | null
+          aprovechables_organicos?: number | null
+          biosanitarios?: number | null
+          cortopunzantes?: number | null
+          created_at?: string
+          day?: number
+          de_animales?: number | null
+          farmacos?: number | null
+          id?: string
+          institution_id?: string
+          month?: number
+          no_aprovechables?: number | null
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waste_records_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +289,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "client"],
+    },
   },
 } as const
