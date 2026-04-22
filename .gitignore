@@ -16,6 +16,11 @@ dist-ssr
 .nitro
 *.local
 
+# Mock environment files (for local testing without Supabase)
+.env.mock
+.env.test
+*.mock
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
