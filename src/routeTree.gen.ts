@@ -9,14 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminStatsRouteImport } from './routes/admin.stats'
 import { Route as ApiAdminCreateClientRouteImport } from './routes/api/admin.create-client'
+import { Route as ApiAdminBootstrapRouteImport } from './routes/api/admin.bootstrap'
 import { Route as AdminInstitutionIdRouteImport } from './routes/admin.institution.$id'
 
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -47,6 +54,11 @@ const ApiAdminCreateClientRoute = ApiAdminCreateClientRouteImport.update({
   path: '/api/admin/create-client',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAdminBootstrapRoute = ApiAdminBootstrapRouteImport.update({
+  id: '/api/admin/bootstrap',
+  path: '/api/admin/bootstrap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminInstitutionIdRoute = AdminInstitutionIdRouteImport.update({
   id: '/institution/$id',
   path: '/institution/$id',
@@ -58,8 +70,10 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/institution/$id': typeof AdminInstitutionIdRoute
+  '/api/admin/bootstrap': typeof ApiAdminBootstrapRoute
   '/api/admin/create-client': typeof ApiAdminCreateClientRoute
 }
 export interface FileRoutesByTo {
@@ -67,8 +81,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/institution/$id': typeof AdminInstitutionIdRoute
+  '/api/admin/bootstrap': typeof ApiAdminBootstrapRoute
   '/api/admin/create-client': typeof ApiAdminCreateClientRoute
 }
 export interface FileRoutesById {
@@ -77,8 +93,10 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/institution/$id': typeof AdminInstitutionIdRoute
+  '/api/admin/bootstrap': typeof ApiAdminBootstrapRoute
   '/api/admin/create-client': typeof ApiAdminCreateClientRoute
 }
 export interface FileRouteTypes {
@@ -88,8 +106,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/login'
+    | '/setup'
     | '/admin/stats'
     | '/admin/institution/$id'
+    | '/api/admin/bootstrap'
     | '/api/admin/create-client'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -97,8 +117,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/login'
+    | '/setup'
     | '/admin/stats'
     | '/admin/institution/$id'
+    | '/api/admin/bootstrap'
     | '/api/admin/create-client'
   id:
     | '__root__'
@@ -106,8 +128,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/login'
+    | '/setup'
     | '/admin/stats'
     | '/admin/institution/$id'
+    | '/api/admin/bootstrap'
     | '/api/admin/create-client'
   fileRoutesById: FileRoutesById
 }
@@ -116,11 +140,20 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  SetupRoute: typeof SetupRoute
+  ApiAdminBootstrapRoute: typeof ApiAdminBootstrapRoute
   ApiAdminCreateClientRoute: typeof ApiAdminCreateClientRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -163,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminCreateClientRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/admin/bootstrap': {
+      id: '/api/admin/bootstrap'
+      path: '/api/admin/bootstrap'
+      fullPath: '/api/admin/bootstrap'
+      preLoaderRoute: typeof ApiAdminBootstrapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/institution/$id': {
       id: '/admin/institution/$id'
       path: '/institution/$id'
@@ -190,6 +230,8 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  SetupRoute: SetupRoute,
+  ApiAdminBootstrapRoute: ApiAdminBootstrapRoute,
   ApiAdminCreateClientRoute: ApiAdminCreateClientRoute,
 }
 export const routeTree = rootRouteImport
