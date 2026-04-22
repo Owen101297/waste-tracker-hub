@@ -11,7 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminStatsRouteImport } from './routes/admin.stats'
+import { Route as ApiAdminCreateClientRouteImport } from './routes/api/admin.create-client'
+import { Route as AdminInstitutionIdRouteImport } from './routes/admin.institution.$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -23,40 +27,96 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStatsRoute = AdminStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiAdminCreateClientRoute = ApiAdminCreateClientRouteImport.update({
+  id: '/api/admin/create-client',
+  path: '/api/admin/create-client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminInstitutionIdRoute = AdminInstitutionIdRouteImport.update({
+  id: '/institution/$id',
+  path: '/institution/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/institution/$id': typeof AdminInstitutionIdRoute
+  '/api/admin/create-client': typeof ApiAdminCreateClientRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/institution/$id': typeof AdminInstitutionIdRoute
+  '/api/admin/create-client': typeof ApiAdminCreateClientRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/institution/$id': typeof AdminInstitutionIdRoute
+  '/api/admin/create-client': typeof ApiAdminCreateClientRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/dashboard'
+    | '/login'
+    | '/admin/stats'
+    | '/admin/institution/$id'
+    | '/api/admin/create-client'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login'
-  id: '__root__' | '/' | '/dashboard' | '/login'
+  to:
+    | '/'
+    | '/admin'
+    | '/dashboard'
+    | '/login'
+    | '/admin/stats'
+    | '/admin/institution/$id'
+    | '/api/admin/create-client'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/dashboard'
+    | '/login'
+    | '/admin/stats'
+    | '/admin/institution/$id'
+    | '/api/admin/create-client'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  ApiAdminCreateClientRoute: typeof ApiAdminCreateClientRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +135,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -82,14 +149,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/stats': {
+      id: '/admin/stats'
+      path: '/stats'
+      fullPath: '/admin/stats'
+      preLoaderRoute: typeof AdminStatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/admin/create-client': {
+      id: '/api/admin/create-client'
+      path: '/api/admin/create-client'
+      fullPath: '/api/admin/create-client'
+      preLoaderRoute: typeof ApiAdminCreateClientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/institution/$id': {
+      id: '/admin/institution/$id'
+      path: '/institution/$id'
+      fullPath: '/admin/institution/$id'
+      preLoaderRoute: typeof AdminInstitutionIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminStatsRoute: typeof AdminStatsRoute
+  AdminInstitutionIdRoute: typeof AdminInstitutionIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminStatsRoute: AdminStatsRoute,
+  AdminInstitutionIdRoute: AdminInstitutionIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  ApiAdminCreateClientRoute: ApiAdminCreateClientRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
